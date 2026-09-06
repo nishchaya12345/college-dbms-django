@@ -10,6 +10,7 @@ from mongoengine import ValidationError, NotUniqueError
 
 from . import services
 from .models import Student, Course, Enrollment, StudentHistory
+from django.http import Http404
 
 
 def _decimal(value):
@@ -66,7 +67,9 @@ def students_page(request):
 
 @require_http_methods(['GET', 'POST'])
 def student_edit_page(request, student_id):
-    student = get_object_or_404(Student, student_id=student_id)
+    student = Student.objects(student_id=student_id).first()
+    if student is None:
+     raise Http404("Student not found")
 
     if request.method == 'POST':
         student.name = request.POST.get('name', '').strip()
@@ -86,7 +89,9 @@ def student_edit_page(request, student_id):
 
 @require_http_methods(['POST'])
 def student_delete_page(request, student_id):
-    student = get_object_or_404(Student, student_id=student_id)
+    student = Student.objects(student_id=student_id).first()
+    if student is None:
+     raise Http404("Student not found")
     name = student.name
     student.delete()
     messages.success(request, f'Deleted "{name}". Their enrollments were cascaded automatically.')
@@ -95,7 +100,9 @@ def student_delete_page(request, student_id):
 
 @require_http_methods(['GET'])
 def student_history_page(request, student_id):
-    student = get_object_or_404(Student, student_id=student_id)
+    student = Student.objects(student_id=student_id).first()
+    if student is None:
+     raise Http404("Student not found")
     history = StudentHistory.objects(student_id=student_id).order_by('-valid_from')
     return render(request, 'dbms_app/student_history.html', {
         'student': student,
@@ -207,7 +214,6 @@ def views_page(request):
 
     summary = services.query_student_summary_view()
     return render(request, 'dbms_app/views_page.html', {'summary': summary})
-
 
 @require_http_methods(['GET'])
 def indexes_page(request):
