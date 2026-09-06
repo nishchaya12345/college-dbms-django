@@ -1,0 +1,31 @@
+{% extends 'dbms_app/base.html' %}
+{% block title %}History - {{ student.name }}{% endblock %}
+{% block content %}
+<h1>History: {{ student.name }}</h1>
+<p class="subtitle">Every version of this student's record, written automatically by the INSERT/UPDATE/DELETE triggers.</p>
+
+<div class="card">
+    {% if history %}
+    <table>
+        <tr>
+            <th>Operation</th><th>Name</th><th>Email</th><th>Age</th><th>GPA</th><th>Valid From</th><th>Valid To</th>
+        </tr>
+        {% for h in history %}
+        <tr>
+            <td><span class="badge {{ h.operation|lower }}">{{ h.operation }}</span></td>
+            <td>{{ h.name }}</td>
+            <td>{{ h.email }}</td>
+            <td>{{ h.age }}</td>
+            <td>{{ h.gpa }}</td>
+            <td>{{ h.valid_from }}</td>
+            <td>{{ h.valid_to|default:"— (current)" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No history recorded yet.</p>
+    {% endif %}
+</div>
+
+<a class="btn" href="{% url 'page-students' %}">&larr; Back to Students</a>
+{% endblock %}

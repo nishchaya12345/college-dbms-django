@@ -1,0 +1,30 @@
+{% extends 'dbms_app/base.html' %}
+{% block title %}Dashboard - College DBMS{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p class="subtitle">Django + MongoDB college database - CRUD, temporal history, indexing, triggers, stored procedures and views.</p>
+
+<div class="card">
+    <h2>Quick stats</h2>
+    <div class="stat-row">
+        <div class="stat"><div class="num">{{ total_students }}</div><div class="label">Students</div></div>
+        <div class="stat"><div class="num">{{ total_courses }}</div><div class="label">Courses</div></div>
+        <div class="stat"><div class="num">{{ total_enrollments }}</div><div class="label">Enrollments</div></div>
+        <div class="stat"><div class="num">{{ avg_gpa|default:"-" }}</div><div class="label">Average GPA</div></div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>What each page shows</h2>
+    <table>
+        <tr><th>Page</th><th>DBMS concept</th></tr>
+        <tr><td><a href="{% url 'page-students' %}">Students</a></td><td>CRUD (create, read, update, delete) + triggers writing history automatically</td></tr>
+        <tr><td><a href="{% url 'page-courses' %}">Courses</a></td><td>CRUD on a second collection</td></tr>
+        <tr><td><a href="{% url 'page-enrollments' %}">Enrollments</a></td><td>Junction table linking students &amp; courses</td></tr>
+        <tr><td>Student &rarr; History</td><td>Temporal database (valid_from / valid_to versions)</td></tr>
+        <tr><td><a href="{% url 'page-procedures' %}">Procedures</a></td><td>Stored-procedure equivalents (aggregation pipelines)</td></tr>
+        <tr><td><a href="{% url 'page-views' %}">Views</a></td><td>Native MongoDB view (student_summary)</td></tr>
+        <tr><td><a href="{% url 'page-indexes' %}">Indexes</a></td><td>Indexes on students &amp; enrollments collections</td></tr>
+    </table>
+</div>
+{% endblock %}

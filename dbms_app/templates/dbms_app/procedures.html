@@ -1,0 +1,54 @@
+{% extends 'dbms_app/base.html' %}
+{% block title %}Stored Procedures - College DBMS{% endblock %}
+{% block content %}
+<h1>Stored Procedures</h1>
+<p class="subtitle">MongoDB has no CREATE PROCEDURE statement, so these are aggregation pipelines exposed as simple lookups.</p>
+
+<div class="card">
+    <h2>calculate_average_gpa</h2>
+    {% if gpa_stats %}
+    <div class="stat-row">
+        <div class="stat"><div class="num">{{ gpa_stats.average_gpa|floatformat:2 }}</div><div class="label">Average GPA</div></div>
+        <div class="stat"><div class="num">{{ gpa_stats.min_gpa }}</div><div class="label">Min GPA</div></div>
+        <div class="stat"><div class="num">{{ gpa_stats.max_gpa }}</div><div class="label">Max GPA</div></div>
+        <div class="stat"><div class="num">{{ gpa_stats.total_students }}</div><div class="label">Total Students</div></div>
+    </div>
+    {% else %}
+    <p class="empty">No students yet.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>get_student_details</h2>
+    <form method="get">
+        <div class="form-grid" style="max-width:300px;">
+            <div>
+                <label for="student_id">Student ID</label>
+                <input type="number" id="student_id" name="student_id" value="{{ queried_id|default:'' }}" required>
+            </div>
+        </div>
+        <button type="submit">Look up</button>
+    </form>
+
+    {% if queried_id %}
+        {% if invalid_id %}
+        <p class="empty" style="margin-top:1rem;">Please enter a valid numeric student ID.</p>
+        {% elif student_details %}
+        <table style="margin-top:1rem;">
+            <tr><th>Student</th><th>Email</th><th>GPA</th><th>Course</th><th>Grade</th></tr>
+            {% for row in student_details %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.gpa }}</td>
+                <td>{{ row.course_name|default:"— (not enrolled)" }}</td>
+                <td>{{ row.grade|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="empty" style="margin-top:1rem;">No student found with ID {{ queried_id }}.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

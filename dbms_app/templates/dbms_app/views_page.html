@@ -1,0 +1,30 @@
+{% extends 'dbms_app/base.html' %}
+{% block title %}Views - College DBMS{% endblock %}
+{% block content %}
+<h1>Views</h1>
+<p class="subtitle">student_summary is a real, native MongoDB view (created with db.createView) - not just a Python helper.</p>
+
+<div class="card">
+    <form method="post" style="margin-bottom:1rem;">
+        {% csrf_token %}
+        <button type="submit" name="refresh" value="1">Rebuild view</button>
+    </form>
+
+    {% if summary %}
+    <table>
+        <tr><th>ID</th><th>Name</th><th>Email</th><th>GPA</th><th>Total Courses</th></tr>
+        {% for row in summary %}
+        <tr>
+            <td>{{ row.student_id }}</td>
+            <td>{{ row.name }}</td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.gpa }}</td>
+            <td>{{ row.total_courses }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No data yet - add students first, then rebuild the view.</p>
+    {% endif %}
+</div>
+{% endblock %}

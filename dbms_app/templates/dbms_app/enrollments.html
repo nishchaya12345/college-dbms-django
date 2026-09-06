@@ -1,0 +1,63 @@
+{% extends 'dbms_app/base.html' %}
+{% block title %}Enrollments - College DBMS{% endblock %}
+{% block content %}
+<h1>Enrollments</h1>
+<p class="subtitle">The junction table linking Students and Courses (referenced by the LEFT JOIN in the get_student_details procedure).</p>
+
+<div class="card">
+    <h2>Enroll a student in a course</h2>
+    {% if students and courses %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div>
+                <label for="student_id">Student</label>
+                <select id="student_id" name="student_id" required>
+                    {% for s in students %}
+                    <option value="{{ s.student_id }}">{{ s.name }} (#{{ s.student_id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="course_id">Course</label>
+                <select id="course_id" name="course_id" required>
+                    {% for c in courses %}
+                    <option value="{{ c.course_id }}">{{ c.course_name }} (#{{ c.course_id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="enrollment_date">Enrollment Date</label>
+                <input type="date" id="enrollment_date" name="enrollment_date" required>
+            </div>
+            <div>
+                <label for="grade">Grade (optional)</label>
+                <input type="text" id="grade" name="grade" maxlength="2" placeholder="e.g. A">
+            </div>
+        </div>
+        <button type="submit">Enroll</button>
+    </form>
+    {% else %}
+    <p class="empty">Add at least one student and one course first.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>All enrollments ({{ enrollments|length }})</h2>
+    {% if enrollments %}
+    <table>
+        <tr><th>Student</th><th>Course</th><th>Date</th><th>Grade</th></tr>
+        {% for e in enrollments %}
+        <tr>
+            <td>{{ e.student_name }}</td>
+            <td>{{ e.course_name }}</td>
+            <td>{{ e.enrollment_date }}</td>
+            <td>{{ e.grade|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No enrollments yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

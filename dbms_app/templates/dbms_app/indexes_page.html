@@ -1,0 +1,22 @@
+{% extends 'dbms_app/base.html' %}
+{% block title %}Indexes - College DBMS{% endblock %}
+{% block content %}
+<h1>Indexes</h1>
+<p class="subtitle">MongoDB indexes used for fast lookups, joins, uniqueness, and temporal-history queries.</p>
+
+{% for collection, items in indexes.items %}
+<div class="card">
+    <h2>{{ collection }} collection</h2>
+    {% if items %}
+    <table>
+        <tr><th>Name</th><th>Key</th></tr>
+        {% for idx in items %}
+        <tr><td>{{ idx.name }}</td><td>{{ idx.key }}</td></tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No indexes found.</p>
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}
